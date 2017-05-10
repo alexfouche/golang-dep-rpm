@@ -1,7 +1,7 @@
 golang-dep-rpm
 ==============
 
-A Dockerfile to build [golang/dep: Go dependency tool](https://github.com/golang/dep) rpm for CentOS 6 and 6 and 6 and 6 and 6 and 6 and 7 using [fedora copr](https://copr.fedoraproject.org/).
+A Dockerfile to build [golang/dep: Go dependency tool](https://github.com/golang/dep) rpm for CentOS 6 and 7 using [fedora copr](https://copr.fedoraproject.org/).
 
 ## Setup
 
