@@ -1,11 +1,11 @@
 %define debug_package %{nil}
 
-%global commit             bba3159e387acbffff1e61735d2415e86a5f93b9
+%global commit             05c40eba7fa5512c3a161e4e9df6c8fefde75158
 %global shortcommit        %(c=%{commit}; echo ${c:0:7})
 
 Name:	        golang-dep
-Version:	0
-Release:	0.2.git%{shortcommit}%{?dist}
+Version:	0.1.0
+Release:	1%{?dist}
 Summary:	Go dependency tool
 
 Group:		Development/Tools
@@ -43,6 +43,9 @@ go install ./...
 %{_bindir}/licenseok
 
 %changelog
+* Sun Jun 11 2017 <hnakamur@gmail.com> - 0.1.0-1
+- Update to v0.1.0
+
 * Tue May  2 2017 <hnakamur@gmail.com> - 0-0.2.gitbba3159.el7.centos
 - Update to commit bba3159e387acbffff1e61735d2415e86a5f93b9
 
