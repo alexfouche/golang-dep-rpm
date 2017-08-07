@@ -30,6 +30,7 @@ subcommand:
   srpm          build the srpm
   mock          build the rpm locally with mock
   copr          upload the srpm and build the rpm on copr
+  coprcfg       generate config file for copr
 EOF
 }
 
@@ -107,9 +108,21 @@ build_rpm_with_mock() {
   done
 }
 
+generate_copr_config() {
+  mkdir $HOME/.config
+  cat <<EOF > $HOME/.config/copr
+[copr-cli]
+username = ${COPR_USERNAME}
+login = ${COPR_LOGIN}
+token = ${COPR_TOKEN}
+copr_url = https://copr.fedoraproject.org
+EOF
+}
+
 build_rpm_on_copr() {
   build_srpm
 
+  generate_copr_config
   # Check the project is already created on copr.
   status=`curl -s -o /dev/null -w "%{http_code}" https://copr.fedoraproject.org/api/coprs/${COPR_USERNAME}/${copr_project_name}/detail/`
   if [ $status = "404" ]; then
@@ -154,6 +167,9 @@ mock)
   ;;
 copr)
   build_rpm_on_copr
+  ;;
+coprcfg)
+  generate_copr_config
   ;;
 *)
   usage
