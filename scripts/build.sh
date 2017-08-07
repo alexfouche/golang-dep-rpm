@@ -124,7 +124,7 @@ build_rpm_on_copr() {
 
       # Remove suffix '-x86_64' from epel-6-x86_64, or epel-7-x86_64
       chroot_without_arch=${mock_chroot%-*}
-      chroot_opts="$chroot_opts --data-urlencode repos=https://copr-be.cloud.fedoraproject.org/results/hnakamur/golang-1.8/${chroot_without_arch}-\$basearch/"
+      chroot_opts="$chroot_opts --data-urlencode repos=https://copr-be.cloud.fedoraproject.org/results/hnakamur/golang-1.9/${chroot_without_arch}-\$basearch/"
     done
     curl -s -X POST -u "${COPR_LOGIN}:${COPR_TOKEN}" \
       --data-urlencode "name=${copr_project_name}" \
