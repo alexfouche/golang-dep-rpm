@@ -57,12 +57,12 @@ create_golang_repo_file() {
 
   golang_repo_file=golang.repo
   if [ ! -f $golang_repo_file ]; then
-    # NOTE: Although https://copr.fedorainfracloud.org/coprs/hnakamur/golang-1.8/repo/epel-6/hnakamur-golang-1.8-epel-6.repo
+    # NOTE: Although https://copr.fedorainfracloud.org/coprs/hnakamur/golang-1.9/repo/epel-7/hnakamur-golang-1.9-epel-6.repo
     #       has the gpgkey in it, I don't use it since I don't know how to add it to /etc/mock/*.cfg
     cat > ${golang_repo_file} <<EOF
-[hnakamur-golang-1.8]
-name=Copr repo for golang 1.8.x created by hnakamur
-baseurl=https://copr-be.cloud.fedoraproject.org/results/hnakamur/golang-1.8/${base_chroot}/
+[hnakamur-golang-1.9]
+name=Copr repo for golang 1.9.x created by hnakamur
+baseurl=https://copr-be.cloud.fedoraproject.org/results/hnakamur/golang-1.9/${base_chroot}/
 enabled=1
 gpgcheck=0
 EOF
