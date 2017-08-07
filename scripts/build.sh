@@ -21,6 +21,7 @@ sudo yum install ${rpm_name}
 
 spec_file=${rpm_name}.spec
 mock_chroots="epel-6-${arch} epel-7-${arch}"
+ext_repos="https://copr-be.cloud.fedoraproject.org/results/hnakamur/golang-1.9/epel-7-${arch}/"
 
 usage() {
   cat <<'EOF' 1>&2
@@ -109,7 +110,7 @@ build_rpm_with_mock() {
 }
 
 generate_copr_config() {
-  mkdir $HOME/.config
+  mkdir -p $HOME/.config
   cat <<EOF > $HOME/.config/copr
 [copr-cli]
 username = ${COPR_USERNAME}
@@ -123,39 +124,23 @@ build_rpm_on_copr() {
   build_srpm
 
   generate_copr_config
-  # Check the project is already created on copr.
-  status=`curl -s -o /dev/null -w "%{http_code}" https://copr.fedoraproject.org/api/coprs/${COPR_USERNAME}/${copr_project_name}/detail/`
-  if [ $status = "404" ]; then
-    # Create the project on copr.
-    # We call copr APIs with curl to work around the InsecurePlatformWarning problem
-    # since system python in CentOS 7 is old.
-    # I read the source code of https://pypi.python.org/pypi/copr/1.62.1
-    # since the API document at https://copr.fedoraproject.org/api/ is old.
-    chroot_opts=''
-    for mock_chroot in $mock_chroots; do
-      chroot_opts="$chroot_opts --data-urlencode ${mock_chroot}=y"
 
-      # Remove suffix '-x86_64' from epel-6-x86_64, or epel-7-x86_64
-      chroot_without_arch=${mock_chroot%-*}
-      chroot_opts="$chroot_opts --data-urlencode repos=https://copr-be.cloud.fedoraproject.org/results/hnakamur/golang-1.9/${chroot_without_arch}-\$basearch/"
+  # Create copr project if it does not exist
+  if ! copr-cli list-package-names ${COPR_USERNAME}/${copr_project_name} 2>&1; then
+    local chroot_args=''
+    for mock_chroot in $mock_chroots; do
+      chroot_args="$chroot_args --chroot ${mock_chroot}"
     done
-    curl -s -X POST -u "${COPR_LOGIN}:${COPR_TOKEN}" \
-      --data-urlencode "name=${copr_project_name}" \
-      $chroot_opts \
-      --data-urlencode "description=${copr_project_description}" \
-      --data-urlencode "instructions=${copr_project_instructions}" \
-      https://copr.fedoraproject.org/api/coprs/${COPR_USERNAME}/new/
+    local repo_args=''
+    for ext_repo in $ext_repos; do
+      repo_args="$repo_args --repo ${ext_repo}"
+    done
+    copr-cli create --description="${copr_project_description}" \
+        --instruction="${copr_project_instructions}" $chroot_args $repo_args \
+	${COPR_USERNAME}/${copr_project_name}
   fi
-  # Add a new build on copr with uploading a srpm file.
-  chroot_opts=''
-  for mock_chroot in $mock_chroots; do
-    chroot_opts="$chroot_opts -F ${mock_chroot}=y"
-  done
-  curl -s -X POST -u "${COPR_LOGIN}:${COPR_TOKEN}" \
-    -H "Expect:" \
-    $chroot_opts \
-    -F "pkgs=@${topdir}/SRPMS/${srpm_file};type=application/x-rpm" \
-    https://copr.fedoraproject.org/api/coprs/${COPR_USERNAME}/${copr_project_name}/new_build_upload/
+
+  copr-cli build ${COPR_USERNAME}/${copr_project_name} ${topdir}/SRPMS/${srpm_file}
 }
 
 case "${1:-}" in
