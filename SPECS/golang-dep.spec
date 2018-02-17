@@ -1,18 +1,15 @@
 %define debug_package %{nil}
 
-%global commit             7a91b794bbfbf1f3b8b79823799316451127801b
-%global shortcommit        %(c=%{commit}; echo ${c:0:7})
-
 Name:	        golang-dep
-Version:	0.3.0
-Release:	1.1.git%{shortcommit}%{?dist}
+Version:	0.4.1
+Release:	1%{?dist}
 Summary:	Go dependency tool
 
 Group:		Development/Tools
 License:	BSD-3-Clause License
 URL:		https://github.com/golang/dep
 
-Source0:	https://github.com/golang/dep/archive/%{commit}.tar.gz#/dep-%{commit}.tar.gz
+Source0:	https://github.com/golang/dep/archive/v%{version}.tar.gz#/dep-%{version}.tar.gz
 
 BuildRoot:      %{name}
 BuildRequires:  golang >= 1.8
@@ -25,7 +22,7 @@ dep is NOT an official tool. Yet. Check out the Roadmap!
 %prep
 %setup -c -n %{name}/go/src/github.com/golang
 cd %{_builddir}/%{name}/go/src/github.com/golang
-%{__mv} dep-%{commit} dep
+%{__mv} dep-%{version} dep
 
 %build
 export GOPATH=%{_builddir}/%{name}/go
@@ -43,6 +40,9 @@ go install ./...
 %{_bindir}/licenseok
 
 %changelog
+* Sat Feb 17 2018 <hnakamur@gmail.com> - 0.4.1-1
+- Update to version 0.4.1 
+
 * Mon Aug 07 2017 <hnakamur@gmail.com> - 0.3.0-1.1.git7a91b79
 - Update to commit 7a91b794bbfbf1f3b8b79823799316451127801b
 
