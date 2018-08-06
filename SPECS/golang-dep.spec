@@ -1,7 +1,7 @@
 %define debug_package %{nil}
 
 Name:	        golang-dep
-Version:	0.4.1
+Version:	0.5.0
 Release:	1%{?dist}
 Summary:	Go dependency tool
 
@@ -40,6 +40,10 @@ go install ./...
 %{_bindir}/licenseok
 
 %changelog
+* Mon Aug 06 2018 <alexandre.fouche@gmail.com> - 0.5.0-1
+- Update to version 0.5.0
+- Added dependencies that 0.5.0 needed
+
 * Sat Feb 17 2018 <hnakamur@gmail.com> - 0.4.1-1
 - Update to version 0.4.1 
 
